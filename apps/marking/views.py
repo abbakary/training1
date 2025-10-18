@@ -74,11 +74,11 @@ def exam_result_detail_view(request, result_id):
     
     questions = result.exam.examquestion_set.all().order_by('question_number')
     responses = {r.question_id: r for r in result.responses.all()}
-    
+    question_rows = [(q, responses.get(q.id)) for q in questions]
+
     context = {
         'result': result,
-        'questions': questions,
-        'responses': responses,
+        'question_rows': question_rows,
     }
     return render(request, 'marking/result_detail.html', context)
 
