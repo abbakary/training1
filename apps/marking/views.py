@@ -114,6 +114,11 @@ def record_marks_view(request, assignment_id):
             updated_result = form.save()
             formset.save()
 
+            if not updated_result.marking_date:
+                from django.utils import timezone
+                updated_result.marking_date = timezone.now()
+                updated_result.save()
+
             # Auto-generate a marked exam PDF reflecting recorded marks
             pdf_bytes = generate_marked_exam_pdf(updated_result)
             marked_filename = f"marked_{updated_result.dreva.driver_id}_{updated_result.exam.id}.pdf"
