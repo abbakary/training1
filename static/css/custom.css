@@ -1,0 +1,259 @@
+/* Custom Styles for DREVAS Training System */
+
+:root {
+    --primary-color: #5e72e4;
+    --secondary-color: #11cdef;
+    --success-color: #2dce89;
+    --danger-color: #f5365c;
+    --warning-color: #fb6340;
+    --info-color: #11cdef;
+}
+
+body {
+    font-family: 'Montserrat', sans-serif;
+}
+
+/* Icon Boxes */
+.icon-box {
+    width: 50px;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 8px;
+    font-size: 24px;
+}
+
+.icon-box svg {
+    width: 24px;
+    height: 24px;
+}
+
+.bg-primary-light {
+    background-color: rgba(94, 114, 228, 0.1);
+    color: var(--primary-color);
+}
+
+.bg-success-light {
+    background-color: rgba(45, 206, 137, 0.1);
+    color: var(--success-color);
+}
+
+.bg-danger-light {
+    background-color: rgba(245, 54, 92, 0.1);
+    color: var(--danger-color);
+}
+
+.bg-warning-light {
+    background-color: rgba(251, 99, 64, 0.1);
+    color: var(--warning-color);
+}
+
+/* Card Styles */
+.card {
+    border: 0;
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.075);
+    border-radius: 8px;
+    transition: all 0.3s ease;
+}
+
+.card:hover {
+    box-shadow: 0 1rem 2rem rgba(0, 0, 0, 0.1);
+}
+
+.card-header {
+    background-color: #f8f9fa;
+    border-bottom: 1px solid #e9ecef;
+    padding: 1.25rem;
+}
+
+.card-header h4 {
+    margin: 0;
+    color: #1f2937;
+    font-weight: 600;
+}
+
+/* Table Styles */
+.table-hover tbody tr:hover {
+    background-color: #f8f9fa;
+}
+
+.table th {
+    background-color: #f8f9fa;
+    border-bottom: 2px solid #e9ecef;
+    font-weight: 600;
+    color: #374151;
+}
+
+/* Badge Styles */
+.badge {
+    padding: 0.4rem 0.8rem;
+    font-weight: 500;
+    font-size: 0.8rem;
+}
+
+.badge-success {
+    background-color: rgba(45, 206, 137, 0.2);
+    color: var(--success-color);
+}
+
+.badge-danger {
+    background-color: rgba(245, 54, 92, 0.2);
+    color: var(--danger-color);
+}
+
+.badge-warning {
+    background-color: rgba(251, 99, 64, 0.2);
+    color: var(--warning-color);
+}
+
+.badge-primary {
+    background-color: rgba(94, 114, 228, 0.2);
+    color: var(--primary-color);
+}
+
+/* Button Styles */
+.btn-primary {
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
+}
+
+.btn-primary:hover {
+    background-color: #4c63d2;
+    border-color: #4c63d2;
+}
+
+/* Form Styles */
+.form-control {
+    border-radius: 6px;
+    border: 1px solid #e9ecef;
+    padding: 0.6rem 0.875rem;
+    transition: all 0.3s ease;
+}
+
+.form-control:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 0.2rem rgba(94, 114, 228, 0.25);
+}
+
+.form-label {
+    font-weight: 500;
+    color: #374151;
+    margin-bottom: 0.5rem;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .icon-box {
+        width: 40px;
+        height: 40px;
+        font-size: 18px;
+    }
+    
+    .card-body {
+        padding: 1rem;
+    }
+    
+    .table-responsive {
+        font-size: 0.875rem;
+    }
+}
+
+/* Alert Styles */
+.alert-container {
+    margin-bottom: 1.5rem;
+}
+
+.alert {
+    border-radius: 6px;
+    border: none;
+    animation: slideDown 0.3s ease-out;
+}
+
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Custom Scrollbar */
+.custom-scrollbar {
+    scrollbar-width: thin;
+    scrollbar-color: #d1d5db #f3f4f6;
+}
+
+.custom-scrollbar::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+    background: #f3f4f6;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+    background: #d1d5db;
+    border-radius: 3px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+    background: #9ca3af;
+}
+
+/* Login Card */
+.login-card {
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+    margin-top: 5rem;
+}
+
+.login-card .card-body {
+    padding: 2.5rem;
+}
+
+/* Exam Meta */
+.exam-meta small {
+    display: block;
+    margin-bottom: 0.25rem;
+    line-height: 1.4;
+}
+
+/* Dashboard Stats */
+.stat-card {
+    background: linear-gradient(135deg, var(--primary-color) 0%, rgba(94, 114, 228, 0.6) 100%);
+    color: white;
+    border-radius: 8px;
+    padding: 1.5rem;
+    margin-bottom: 1rem;
+}
+
+/* Breadcrumb */
+.breadcrumb {
+    background-color: transparent;
+    padding: 0;
+    margin: 0;
+}
+
+.breadcrumb-item a {
+    color: var(--primary-color);
+    text-decoration: none;
+}
+
+.breadcrumb-item.active {
+    color: #6b7280;
+}
+
+/* Page Title */
+.page-title {
+    margin-bottom: 2rem;
+}
+
+.page-title h4 {
+    color: #1f2937;
+    font-weight: 700;
+    margin: 0;
+}

@@ -1,0 +1,82 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DREVAS - Login</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@200;300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" type="text/css" href="{% static 'riho/assets/css/font-awesome.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'riho/assets/css/vendors/bootstrap.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'riho/assets/css/style.css' %}">
+    <link rel="stylesheet" href="{% static 'riho/assets/css/color-1.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'riho/assets/css/responsive.css' %}">
+</head>
+<body>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-xl-4 col-lg-5 col-md-6 box-col-6 mx-auto">
+                <div class="login-card card">
+                    <div class="card-body">
+                        <div class="login-main">
+                            <form method="POST" class="theme-form">
+                                {% csrf_token %}
+                                
+                                <div class="mb-3">
+                                    <h4 class="mb-4 text-center">DREVAS Training System</h4>
+                                    <p class="text-center f-light mb-3">Driver Training & Examination Management</p>
+                                </div>
+                                
+                                {% if form.non_field_errors %}
+                                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                                    {% for error in form.non_field_errors %}
+                                    {{ error }}
+                                    {% endfor %}
+                                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                                </div>
+                                {% endif %}
+                                
+                                <div class="form-group">
+                                    <label class="form-label">Username or Email</label>
+                                    {{ form.username }}
+                                    {% if form.username.errors %}
+                                    <span class="text-danger">{{ form.username.errors.0 }}</span>
+                                    {% endif %}
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label class="form-label">Password</label>
+                                    {{ form.password }}
+                                    {% if form.password.errors %}
+                                    <span class="text-danger">{{ form.password.errors.0 }}</span>
+                                    {% endif %}
+                                </div>
+                                
+                                <div class="form-group mb-0">
+                                    <div class="checkbox">
+                                        <input id="checkbox-sm" type="checkbox" name="remember_me">
+                                        <label for="checkbox-sm" class="checkbox-primary">Remember me</label>
+                                    </div>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <button type="submit" class="btn btn-primary btn-block w-100 mt-3">
+                                        Sign In
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script src="{% static 'riho/assets/js/bootstrap/bootstrap.bundle.min.js' %}"></script>
+</body>
+</html>

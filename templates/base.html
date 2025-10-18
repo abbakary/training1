@@ -1,0 +1,105 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Driver Training and Examination System">
+    <meta name="author" content="Drevas Training">
+    <link rel="icon" href="{% static 'images/favicon.png' %}" type="image/x-icon">
+    <title>{% block title %}DREVAS - Driver Training System{% endblock %}</title>
+    
+    <!-- Google font -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@200;300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" type="text/css" href="{% static 'riho/assets/css/font-awesome.css' %}">
+    
+    <!-- Icon fonts -->
+    <link rel="stylesheet" type="text/css" href="{% static 'riho/assets/css/vendors/icofont.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'riho/assets/css/vendors/themify.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'riho/assets/css/vendors/feather-icon.css' %}">
+    
+    <!-- Plugins CSS -->
+    <link rel="stylesheet" type="text/css" href="{% static 'riho/assets/css/vendors/slick.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'riho/assets/css/vendors/scrollbar.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'riho/assets/css/vendors/animate.css' %}">
+    
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" type="text/css" href="{% static 'riho/assets/css/vendors/bootstrap.css' %}">
+    
+    <!-- Main CSS -->
+    <link rel="stylesheet" type="text/css" href="{% static 'riho/assets/css/style.css' %}">
+    <link rel="stylesheet" href="{% static 'riho/assets/css/color-1.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'riho/assets/css/responsive.css' %}">
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" type="text/css" href="{% static 'css/custom.css' %}">
+    
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+    {% if user.is_authenticated %}
+    <!-- Loader -->
+    <div class="loader-wrapper">
+        <div class="loader">
+            <div class="loader4"></div>
+        </div>
+    </div>
+    
+    <!-- Scroll to Top -->
+    <div class="tap-top"><i data-feather="chevrons-up"></i></div>
+    
+    <!-- Page Wrapper -->
+    <div class="page-wrapper compact-wrapper" id="pageWrapper">
+        <!-- Header -->
+        {% include 'includes/header.html' %}
+        
+        <!-- Page Body -->
+        <div class="page-body-wrapper">
+            <!-- Sidebar -->
+            {% include 'includes/sidebar.html' %}
+            
+            <!-- Main Content -->
+            <div class="page-body">
+                <div class="container-fluid">
+                    {% if messages %}
+                    <div class="alert-container">
+                        {% for message in messages %}
+                        <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                            {{ message }}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+                    
+                    {% block content %}{% endblock %}
+                </div>
+            </div>
+        </div>
+    </div>
+    {% else %}
+    <!-- Login Page -->
+    {% block login_content %}{% endblock %}
+    {% endif %}
+    
+    <!-- Bootstrap JS -->
+    <script src="{% static 'riho/assets/js/bootstrap/bootstrap.bundle.min.js' %}"></script>
+    
+    <!-- Feather Icons -->
+    <script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
+    <script>feather.replace();</script>
+    
+    <!-- jQuery -->
+    <script src="{% static 'riho/assets/js/jquery-3.6.0.min.js' %}"></script>
+    
+    <!-- Custom JS -->
+    <script src="{% static 'js/custom.js' %}"></script>
+    
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

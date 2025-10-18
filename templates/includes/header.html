@@ -1,0 +1,92 @@
+{% load static %}
+<div class="page-header">
+    <div class="header-wrapper row m-0">
+        <form class="form-inline search-full col" action="{% url 'drevas:dreva_list' %}" method="get">
+            <div class="form-group w-100">
+                <div class="Typeahead Typeahead--twitterUsers">
+                    <div class="u-posRelative">
+                        <input class="demo-input Typeahead-input form-control-plaintext w-100" type="text" 
+                               placeholder="Search Drevas..." name="search_query" title="">
+                        <div class="spinner-border Typeahead-spinner" role="status"><span class="sr-only">Loading...</span></div>
+                        <i class="close-search" data-feather="x"></i>
+                    </div>
+                    <div class="Typeahead-menu"></div>
+                </div>
+            </div>
+        </form>
+        
+        <div class="header-logo-wrapper col-auto p-0">
+            <div class="logo-wrapper">
+                <a href="{% url 'core:dashboard' %}">
+                    <img class="img-fluid for-light" src="{% static 'riho/assets/images/logo/logo_dark.png' %}" alt="logo">
+                    <img class="img-fluid for-dark" src="{% static 'riho/assets/images/logo/logo.png' %}" alt="logo">
+                </a>
+            </div>
+            <div class="toggle-sidebar">
+                <i class="status_toggle middle sidebar-toggle" data-feather="align-center"></i>
+            </div>
+        </div>
+        
+        <div class="left-header col-xxl-5 col-xl-6 col-lg-5 col-md-4 col-sm-3 p-0">
+            <div>
+                <a class="toggle-sidebar" href="#">
+                    <i class="iconly-Category icli"></i>
+                </a>
+                <div class="d-flex align-items-center gap-2">
+                    <h4 class="f-w-600">Welcome {{ user.first_name|default:user.username }}</h4>
+                    <img class="mt-0" src="{% static 'riho/assets/images/hand.gif' %}" alt="hand-gif">
+                </div>
+            </div>
+            <div class="welcome-content d-xl-block d-none">
+                <span class="text-truncate col-12">Driver Training & Examination System</span>
+            </div>
+        </div>
+        
+        <div class="nav-right col-xxl-7 col-xl-6 col-md-7 col-8 pull-right right-header p-0 ms-auto">
+            <ul class="nav-menus">
+                <li class="d-md-block d-none">
+                    <div class="form search-form mb-0">
+                        <div class="input-group">
+                            <span class="input-icon">
+                                <svg><use href="{% static 'riho/assets/svg/icon-sprite.svg' %}#search-header"></use></svg>
+                                <input class="w-100" type="search" placeholder="Search..." name="q">
+                            </span>
+                        </div>
+                    </div>
+                </li>
+                
+                <li class="onhover-dropdown">
+                    <svg><use href="{% static 'riho/assets/svg/icon-sprite.svg' %}#bell"></use></svg>
+                    <span class="badge rounded-pill badge-secondary">3</span>
+                    <div class="onhover-show-div notification-dropdown">
+                        <div class="card mb-0">
+                            <div class="card-header">
+                                <h4 class="text-start f-w-600">Notifications</h4>
+                            </div>
+                            <div class="card-body">
+                                <p class="f-w-500">You have 3 pending exams to mark</p>
+                            </div>
+                        </div>
+                    </div>
+                </li>
+                
+                <li class="profile-nav onhover-dropdown">
+                    <div class="media profile-media">
+                        <img class="b-r-10" src="{% static 'riho/assets/images/dashboard/profile.png' %}" alt="">
+                        <div class="media-body d-xxl-block d-none box-col-none">
+                            <div class="d-flex align-items-center gap-2">
+                                <span>{{ user.first_name|default:user.username }}</span>
+                                <i class="middle fa fa-angle-down"></i>
+                            </div>
+                            <p class="mb-0 font-roboto">{{ user.role.get_role_display|default:'User' }}</p>
+                        </div>
+                    </div>
+                    <ul class="profile-dropdown onhover-show-div">
+                        <li><a href="{% url 'core:dashboard' %}"><i data-feather="home"></i><span>Dashboard</span></a></li>
+                        <li><a href="{% url 'core:logout' %}"><i data-feather="log-out"></i><span>Log Out</span></a></li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,227 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Dashboard - DREVAS{% endblock %}
+
+{% block content %}
+<div class="page-title">
+    <div class="row">
+        <div class="col-6">
+            <h4>Dashboard</h4>
+        </div>
+        <div class="col-6">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{% url 'core:dashboard' %}">
+                    <svg class="stroke-icon"><use href="{% static 'riho/assets/svg/icon-sprite.svg' %}#stroke-home"></use></svg>
+                </a></li>
+                <li class="breadcrumb-item active">Dashboard</li>
+            </ol>
+        </div>
+    </div>
+</div>
+
+<div class="container-fluid">
+    {% if user_role.is_admin %}
+    <!-- Admin Dashboard -->
+    <div class="row">
+        <div class="col-xl-3 col-md-6 box-col-6">
+            <div class="card">
+                <div class="card-body">
+                    <div class="d-flex align-items-center gap-2 mb-2">
+                        <div class="icon-box bg-primary-light">
+                            <svg><use href="{% static 'riho/assets/svg/icon-sprite.svg' %}#people"></use></svg>
+                        </div>
+                        <div>
+                            <h6 class="mb-0">Total Drevas</h6>
+                        </div>
+                    </div>
+                    <h2 class="f-w-600 mb-2">{{ total_drevas }}</h2>
+                    <p class="f-light f-12">Active drivers in training</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-xl-3 col-md-6 box-col-6">
+            <div class="card">
+                <div class="card-body">
+                    <div class="d-flex align-items-center gap-2 mb-2">
+                        <div class="icon-box bg-warning-light">
+                            <svg><use href="{% static 'riho/assets/svg/icon-sprite.svg' %}#calendar"></use></svg>
+                        </div>
+                        <div>
+                            <h6 class="mb-0">Training Sessions</h6>
+                        </div>
+                    </div>
+                    <h2 class="f-w-600 mb-2">{{ total_sessions }}</h2>
+                    <p class="f-light f-12">Active training batches</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-xl-3 col-md-6 box-col-6">
+            <div class="card">
+                <div class="card-body">
+                    <div class="d-flex align-items-center gap-2 mb-2">
+                        <div class="icon-box bg-success-light">
+                            <svg><use href="{% static 'riho/assets/svg/icon-sprite.svg' %}#task-square"></use></svg>
+                        </div>
+                        <div>
+                            <h6 class="mb-0">Total Exams</h6>
+                        </div>
+                    </div>
+                    <h2 class="f-w-600 mb-2">{{ total_exams }}</h2>
+                    <p class="f-light f-12">Exams created</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-xl-3 col-md-6 box-col-6">
+            <div class="card">
+                <div class="card-body">
+                    <div class="d-flex align-items-center gap-2 mb-2">
+                        <div class="icon-box bg-danger-light">
+                            <svg><use href="{% static 'riho/assets/svg/icon-sprite.svg' %}#activity"></use></svg>
+                        </div>
+                        <div>
+                            <h6 class="mb-0">Pending Results</h6>
+                        </div>
+                    </div>
+                    <h2 class="f-w-600 mb-2">{{ pending_results }}</h2>
+                    <p class="f-light f-12">Awaiting marks</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Recent Activity -->
+    <div class="row mt-4">
+        <div class="col-xl-6">
+            <div class="card">
+                <div class="card-header">
+                    <h4>Recent Drevas</h4>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive custom-scrollbar">
+                        <table class="w-100">
+                            <thead>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Driver ID</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for dreva in recent_drevas %}
+                                <tr>
+                                    <td>
+                                        <a href="{% url 'drevas:dreva_detail' dreva.id %}">{{ dreva.full_name }}</a>
+                                    </td>
+                                    <td>{{ dreva.driver_id }}</td>
+                                    <td>
+                                        <span class="badge rounded-pill badge-{% if dreva.status == 'passed' %}success{% elif dreva.status == 'failed' %}danger{% else %}warning{% endif %}">
+                                            {{ dreva.get_status_display }}
+                                        </span>
+                                    </td>
+                                </tr>
+                                {% empty %}
+                                <tr>
+                                    <td colspan="3" class="text-center text-muted">No drevas yet</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-xl-6">
+            <div class="card">
+                <div class="card-header">
+                    <h4>Recent Results</h4>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive custom-scrollbar">
+                        <table class="w-100">
+                            <thead>
+                                <tr>
+                                    <th>Driver</th>
+                                    <th>Exam</th>
+                                    <th>Marks</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for result in recent_results %}
+                                <tr>
+                                    <td>
+                                        <a href="{% url 'drevas:dreva_detail' result.dreva.id %}">{{ result.dreva.full_name }}</a>
+                                    </td>
+                                    <td>{{ result.exam.title }}</td>
+                                    <td>
+                                        {% if result.obtained_marks %}
+                                        {{ result.obtained_marks }}/{{ result.total_marks }}
+                                        {% else %}
+                                        <span class="text-muted">-</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        <span class="badge rounded-pill badge-{% if result.status == 'passed' %}success{% elif result.status == 'failed' %}danger{% else %}secondary{% endif %}">
+                                            {{ result.get_status_display }}
+                                        </span>
+                                    </td>
+                                </tr>
+                                {% empty %}
+                                <tr>
+                                    <td colspan="4" class="text-center text-muted">No results yet</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    {% elif user_role.is_trainer %}
+    <!-- Trainer Dashboard -->
+    <div class="row">
+        <div class="col-xl-4 col-md-6 box-col-6">
+            <div class="card">
+                <div class="card-body">
+                    <div class="d-flex align-items-center gap-2 mb-2">
+                        <div class="icon-box bg-primary-light">
+                            <svg><use href="{% static 'riho/assets/svg/icon-sprite.svg' %}#task-square"></use></svg>
+                        </div>
+                        <div>
+                            <h6 class="mb-0">Pending Exams</h6>
+                        </div>
+                    </div>
+                    <h2 class="f-w-600 mb-2">{{ pending_exams }}</h2>
+                    <p class="f-light f-12">To be reviewed</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-xl-4 col-md-6 box-col-6">
+            <div class="card">
+                <div class="card-body">
+                    <div class="d-flex align-items-center gap-2 mb-2">
+                        <div class="icon-box bg-success-light">
+                            <svg><use href="{% static 'riho/assets/svg/icon-sprite.svg' %}#check-square"></use></svg>
+                        </div>
+                        <div>
+                            <h6 class="mb-0">Marked Exams</h6>
+                        </div>
+                    </div>
+                    <h2 class="f-w-600 mb-2">{{ marked_exams }}</h2>
+                    <p class="f-light f-12">Completed marking</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    {% endif %}
+</div>
+{% endblock %}

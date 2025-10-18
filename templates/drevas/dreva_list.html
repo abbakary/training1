@@ -1,0 +1,130 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Drevas List - DREVAS{% endblock %}
+
+{% block content %}
+<div class="page-title">
+    <div class="row">
+        <div class="col-6">
+            <h4>Drevas (Drivers)</h4>
+        </div>
+        <div class="col-6">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{% url 'core:dashboard' %}">
+                    <svg class="stroke-icon"><use href="{% static 'riho/assets/svg/icon-sprite.svg' %}#stroke-home"></use></svg>
+                </a></li>
+                <li class="breadcrumb-item active">Drevas</li>
+            </ol>
+        </div>
+    </div>
+</div>
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h4>Drivers List ({{ total_count }})</h4>
+                        {% if user.role.is_admin %}
+                        <a href="{% url 'drevas:dreva_create' %}" class="btn btn-primary btn-sm">
+                            <i data-feather="plus"></i> Add New Dreva
+                        </a>
+                        {% endif %}
+                    </div>
+                </div>
+                
+                <div class="card-body">
+                    <!-- Search & Filter -->
+                    <form method="get" class="mb-4">
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <input type="text" name="search_query" class="form-control" 
+                                       placeholder="Search by name, ID or email..." 
+                                       value="{{ form.search_query.value|default:'' }}">
+                            </div>
+                            <div class="col-md-3">
+                                <select name="status" class="form-control">
+                                    <option value="">All Status</option>
+                                    <option value="in_training" {% if form.status.value == 'in_training' %}selected{% endif %}>In Training</option>
+                                    <option value="passed" {% if form.status.value == 'passed' %}selected{% endif %}>Passed</option>
+                                    <option value="failed" {% if form.status.value == 'failed' %}selected{% endif %}>Failed</option>
+                                    <option value="suspended" {% if form.status.value == 'suspended' %}selected{% endif %}>Suspended</option>
+                                </select>
+                            </div>
+                            <div class="col-md-3">
+                                <button type="submit" class="btn btn-primary w-100">
+                                    <i data-feather="search"></i> Search
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                    
+                    <!-- Drevas Table -->
+                    <div class="table-responsive custom-scrollbar">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Driver ID</th>
+                                    <th>Organization</th>
+                                    <th>Status</th>
+                                    <th>Phone</th>
+                                    <th>Enrolled Date</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for dreva in drevas %}
+                                <tr>
+                                    <td>
+                                        <strong>{{ dreva.full_name }}</strong>
+                                    </td>
+                                    <td>{{ dreva.driver_id }}</td>
+                                    <td>{{ dreva.organization.name }}</td>
+                                    <td>
+                                        <span class="badge rounded-pill badge-{% if dreva.status == 'passed' %}success{% elif dreva.status == 'failed' %}danger{% elif dreva.status == 'suspended' %}dark{% else %}warning{% endif %}">
+                                            {{ dreva.get_status_display }}
+                                        </span>
+                                    </td>
+                                    <td>{{ dreva.phone|default:'-' }}</td>
+                                    <td>{{ dreva.date_enrolled|date:"d M Y" }}</td>
+                                    <td>
+                                        <div class="dropdown">
+                                            <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button" 
+                                                    data-bs-toggle="dropdown">
+                                                <i data-feather="more-vertical"></i>
+                                            </button>
+                                            <ul class="dropdown-menu">
+                                                <li><a class="dropdown-item" href="{% url 'drevas:dreva_detail' dreva.id %}">
+                                                    <i data-feather="eye"></i> View Profile
+                                                </a></li>
+                                                {% if user.role.is_admin %}
+                                                <li><a class="dropdown-item" href="{% url 'drevas:dreva_edit' dreva.id %}">
+                                                    <i data-feather="edit-2"></i> Edit
+                                                </a></li>
+                                                {% endif %}
+                                                <li><a class="dropdown-item" href="{% url 'marking:dreva_progress' dreva.id %}">
+                                                    <i data-feather="activity"></i> Progress
+                                                </a></li>
+                                            </ul>
+                                        </div>
+                                    </td>
+                                </tr>
+                                {% empty %}
+                                <tr>
+                                    <td colspan="7" class="text-center text-muted py-4">
+                                        No drevas found
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,141 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Exam Results - DREVAS{% endblock %}
+
+{% block content %}
+<div class="page-title">
+    <div class="row">
+        <div class="col-6">
+            <h4>Exam Results</h4>
+        </div>
+        <div class="col-6">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{% url 'core:dashboard' %}">
+                    <svg class="stroke-icon"><use href="{% static 'riho/assets/svg/icon-sprite.svg' %}#stroke-home"></use></svg>
+                </a></li>
+                <li class="breadcrumb-item active">Results</li>
+            </ol>
+        </div>
+    </div>
+</div>
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-body">
+                    <!-- Filter Form -->
+                    <form method="get" class="mb-4">
+                        <div class="row g-3">
+                            <div class="col-md-4">
+                                <select name="exam" class="form-control">
+                                    <option value="">All Exams</option>
+                                    {% for exam in form.exam.field.queryset %}
+                                    <option value="{{ exam.id }}" {% if request.GET.exam|add:"0" == exam.id %}selected{% endif %}>
+                                        {{ exam.title }}
+                                    </option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div class="col-md-3">
+                                <select name="status" class="form-control">
+                                    <option value="">All Status</option>
+                                    <option value="pending" {% if request.GET.status == 'pending' %}selected{% endif %}>Pending</option>
+                                    <option value="passed" {% if request.GET.status == 'passed' %}selected{% endif %}>Passed</option>
+                                    <option value="failed" {% if request.GET.status == 'failed' %}selected{% endif %}>Failed</option>
+                                </select>
+                            </div>
+                            <div class="col-md-3">
+                                <input type="text" name="dreva" class="form-control" 
+                                       placeholder="Search driver..." 
+                                       value="{{ request.GET.dreva|default:'' }}">
+                            </div>
+                            <div class="col-md-2">
+                                <button type="submit" class="btn btn-primary w-100">
+                                    <i data-feather="search"></i> Filter
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                    
+                    <!-- Results Table -->
+                    <div class="table-responsive custom-scrollbar">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Driver</th>
+                                    <th>Exam</th>
+                                    <th>Exam Date</th>
+                                    <th>Marks</th>
+                                    <th>Percentage</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for result in results %}
+                                <tr>
+                                    <td>
+                                        <strong>{{ result.dreva.full_name }}</strong><br>
+                                        <small class="text-muted">{{ result.dreva.driver_id }}</small>
+                                    </td>
+                                    <td>{{ result.exam.title }}</td>
+                                    <td>{{ result.exam_date|date:"d M Y"|default:'-' }}</td>
+                                    <td>
+                                        {% if result.obtained_marks %}
+                                        {{ result.obtained_marks }}/{{ result.total_marks }}
+                                        {% else %}
+                                        <span class="text-muted">-</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        {% if result.percentage %}
+                                        {{ result.percentage }}%
+                                        {% else %}
+                                        <span class="text-muted">-</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        <span class="badge rounded-pill badge-{% if result.status == 'passed' %}success{% elif result.status == 'failed' %}danger{% else %}secondary{% endif %}">
+                                            {{ result.get_status_display }}
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <div class="dropdown">
+                                            <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button" 
+                                                    data-bs-toggle="dropdown">
+                                                <i data-feather="more-vertical"></i>
+                                            </button>
+                                            <ul class="dropdown-menu">
+                                                <li><a class="dropdown-item" href="{% url 'marking:result_detail' result.id %}">
+                                                    <i data-feather="eye"></i> View Details
+                                                </a></li>
+                                                {% if user.role.is_trainer and result.status == 'pending' %}
+                                                <li><a class="dropdown-item" href="{% url 'marking:record_marks' result.dreva.examassignment_set.first.id %}">
+                                                    <i data-feather="edit-2"></i> Mark Exam
+                                                </a></li>
+                                                {% endif %}
+                                                <li><a class="dropdown-item" href="{% url 'drevas:dreva_detail' result.dreva.id %}">
+                                                    <i data-feather="user"></i> View Driver
+                                                </a></li>
+                                            </ul>
+                                        </div>
+                                    </td>
+                                </tr>
+                                {% empty %}
+                                <tr>
+                                    <td colspan="7" class="text-center text-muted py-4">
+                                        No results found
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
