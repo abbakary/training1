@@ -1,11 +1,13 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
 from django.db.models import Q
+from django.core.files.base import ContentFile
 from apps.core.models import UserRole
 from apps.exams.models import Exam, ExamAssignment
 from apps.drevas.models import Dreva
 from .models import ExamResult, QuestionResponse
 from .forms import ExamResultForm, QuestionResponseFormSet, ExamResultFilterForm
+from .utils import generate_marked_exam_pdf
 
 @login_required
 def exam_result_list_view(request):
@@ -42,10 +44,18 @@ def exam_result_list_view(request):
     # Sort by date
     results = results.order_by('-exam_date')
     
+    # Map result.id -> assignment.id for convenience in templates
+    assignment_for = {}
+    for r in results:
+        assignment = ExamAssignment.objects.filter(exam=r.exam, dreva=r.dreva).first()
+        if assignment:
+            assignment_for[r.id] = assignment.id
+
     context = {
         'results': results,
         'form': form,
         'total_results': results.count(),
+        'assignment_for': assignment_for,
     }
     return render(request, 'marking/result_list.html', context)
 
@@ -103,14 +113,19 @@ def record_marks_view(request, assignment_id):
         formset = QuestionResponseFormSet(request.POST, instance=result)
         
         if form.is_valid() and formset.is_valid():
-            form.save()
+            updated_result = form.save()
             formset.save()
-            
+
+            # Auto-generate a marked exam PDF reflecting recorded marks
+            pdf_bytes = generate_marked_exam_pdf(updated_result)
+            marked_filename = f"marked_{updated_result.dreva.driver_id}_{updated_result.exam.id}.pdf"
+            updated_result.marked_exam_pdf.save(marked_filename, ContentFile(pdf_bytes), save=True)
+
             # Update assignment status
             assignment.status = 'marked'
             assignment.save()
-            
-            return redirect('marking:result_detail', result_id=result.id)
+
+            return redirect('marking:result_detail', result_id=updated_result.id)
     else:
         form = ExamResultForm(instance=result)
         formset = QuestionResponseFormSet(instance=result)
