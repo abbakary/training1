@@ -27,7 +27,7 @@
                 <div class="card-header">
                     <div class="d-flex justify-content-between align-items-center">
                         <h4>All Exams</h4>
-                        {% if user.role.is_trainer %}
+                        {% if user_role and user_role.is_trainer %}
                         <a href="{% url 'exams:exam_create' %}" class="btn btn-primary btn-sm">
                             <i data-feather="plus"></i> Create Exam
                         </a>
@@ -82,7 +82,7 @@
                                         <a href="{% url 'exams:exam_detail' exam.id %}" class="btn btn-sm btn-primary flex-grow-1">
                                             <i data-feather="eye"></i> View
                                         </a>
-                                        {% if user.role.is_trainer %}
+                                        {% if user_role and user_role.is_trainer %}
                                         <a href="{% url 'exams:exam_assign' exam.id %}" class="btn btn-sm btn-outline-primary flex-grow-1">
                                             <i data-feather="plus"></i> Assign
                                         </a>

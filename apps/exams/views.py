@@ -16,7 +16,7 @@ def exam_list_view(request):
         user_role = request.user.role
         organization = user_role.organization
     except UserRole.DoesNotExist:
-        return redirect('login')
+        return redirect('core:login')
     
     exams = Exam.objects.filter(training_session__organization=organization)
     
@@ -46,7 +46,7 @@ def exam_detail_view(request, exam_id):
         user_role = request.user.role
         organization = user_role.organization
     except UserRole.DoesNotExist:
-        return redirect('login')
+        return redirect('core:login')
     
     exam = get_object_or_404(Exam, id=exam_id, training_session__organization=organization)
     questions = ExamQuestion.objects.filter(exam=exam).order_by('question_number')
@@ -69,7 +69,7 @@ def exam_create_view(request):
             return redirect('core:dashboard')
         organization = user_role.organization
     except UserRole.DoesNotExist:
-        return redirect('login')
+        return redirect('core:login')
     
     if request.method == 'POST':
         form = ExamForm(request.POST)
@@ -102,7 +102,7 @@ def exam_assign_view(request, exam_id):
             return redirect('core:dashboard')
         organization = user_role.organization
     except UserRole.DoesNotExist:
-        return redirect('login')
+        return redirect('core:login')
     
     exam = get_object_or_404(Exam, id=exam_id, training_session__organization=organization)
     
@@ -138,7 +138,7 @@ def generate_exam_paper_view(request, assignment_id):
         user_role = request.user.role
         organization = user_role.organization
     except UserRole.DoesNotExist:
-        return redirect('login')
+        return redirect('core:login')
     
     assignment = get_object_or_404(
         ExamAssignment,

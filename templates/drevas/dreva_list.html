@@ -27,7 +27,7 @@
                 <div class="card-header">
                     <div class="d-flex justify-content-between align-items-center">
                         <h4>Drivers List ({{ total_count }})</h4>
-                        {% if user.role.is_admin %}
+                        {% if user_role and user_role.is_admin %}
                         <a href="{% url 'drevas:dreva_create' %}" class="btn btn-primary btn-sm">
                             <i data-feather="plus"></i> Add New Dreva
                         </a>
@@ -100,7 +100,7 @@
                                                 <li><a class="dropdown-item" href="{% url 'drevas:dreva_detail' dreva.id %}">
                                                     <i data-feather="eye"></i> View Profile
                                                 </a></li>
-                                                {% if user.role.is_admin %}
+                                                {% if user_role and user_role.is_admin %}
                                                 <li><a class="dropdown-item" href="{% url 'drevas:dreva_edit' dreva.id %}">
                                                     <i data-feather="edit-2"></i> Edit
                                                 </a></li>

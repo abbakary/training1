@@ -18,6 +18,19 @@ class LoginForm(AuthenticationForm):
         })
     )
 
+    def clean(self):
+        username = self.cleaned_data.get('username')
+        password = self.cleaned_data.get('password')
+        if username and password:
+            try:
+                # If an email is entered, map it to the corresponding username
+                if '@' in username and not User.objects.filter(username=username).exists():
+                    user_obj = User.objects.get(email__iexact=username)
+                    self.cleaned_data['username'] = user_obj.username
+            except User.DoesNotExist:
+                pass
+        return super().clean()
+
 class OrganizationForm(forms.ModelForm):
     """Form for creating/updating organizations."""
     class Meta:
