@@ -13,17 +13,21 @@ def login_view(request):
     """User login view."""
     if request.user.is_authenticated:
         return redirect('core:dashboard')
-    
+
+    next_url = request.GET.get('next') or request.POST.get('next')
+
     if request.method == 'POST':
         form = LoginForm(request, data=request.POST)
         if form.is_valid():
             user = form.get_user()
             login(request, user)
+            if next_url:
+                return redirect(next_url)
             return redirect('core:dashboard')
     else:
         form = LoginForm()
-    
-    context = {'form': form}
+
+    context = {'form': form, 'next': next_url}
     return render(request, 'core/login.html', context)
 
 @login_required
@@ -38,7 +42,7 @@ def dashboard_view(request):
     try:
         user_role = request.user.role
     except UserRole.DoesNotExist:
-        return redirect('login')
+        return redirect('core:login')
     
     organization = user_role.organization
     
@@ -89,7 +93,7 @@ def organization_list_view(request):
         if not user_role.is_admin():
             return redirect('core:dashboard')
     except UserRole.DoesNotExist:
-        return redirect('login')
+        return redirect('core:login')
     
     organizations = Organization.objects.all()
     context = {'organizations': organizations}
