@@ -111,8 +111,8 @@
                                                 <li><a class="dropdown-item" href="{% url 'marking:result_detail' result.id %}">
                                                     <i data-feather="eye"></i> View Details
                                                 </a></li>
-                                                {% if user.role.is_trainer and result.status == 'pending' %}
-                                                <li><a class="dropdown-item" href="{% url 'marking:record_marks' result.dreva.examassignment_set.first.id %}">
+                                                {% if user.role.is_trainer and result.status == 'pending' and result.assignment_id %}
+                                                <li><a class="dropdown-item" href="{% url 'marking:record_marks' result.assignment_id %}">
                                                     <i data-feather="edit-2"></i> Mark Exam
                                                 </a></li>
                                                 {% endif %}
