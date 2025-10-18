@@ -47,13 +47,12 @@
             <table class="table table-sm">
               <thead><tr><th>No.</th><th>Question</th><th>Marks</th><th>Comments</th></tr></thead>
               <tbody>
-                {% for q in questions %}
-                {% with r=responses|get_item:q.id %}{% endwith %}
+                {% for q, r in question_rows %}
                 <tr>
                   <td>{{ q.question_number }}</td>
                   <td>{{ q.question_text }}</td>
-                  <td>{% if responses.q.id %}{{ responses.q.id.marks_awarded|default:'-' }}{% else %}-{% endif %}/{{ q.marks }}</td>
-                  <td>{% if responses.q.id %}{{ responses.q.id.comments|default:'' }}{% endif %}</td>
+                  <td>{% if r %}{{ r.marks_awarded|default:'-' }}{% else %}-{% endif %}/{{ q.marks }}</td>
+                  <td>{% if r %}{{ r.comments|default:'' }}{% endif %}</td>
                 </tr>
                 {% endfor %}
               </tbody>
