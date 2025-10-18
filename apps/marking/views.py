@@ -88,7 +88,7 @@ def record_marks_view(request, assignment_id):
     try:
         user_role = request.user.role
         if not user_role.is_trainer() and not user_role.is_admin():
-            return redirect('dashboard')
+            return redirect('core:dashboard')
         organization = user_role.organization
     except UserRole.DoesNotExist:
         return redirect('login')
