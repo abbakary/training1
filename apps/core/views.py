@@ -30,7 +30,7 @@ def login_view(request):
 def logout_view(request):
     """User logout view."""
     logout(request)
-    return redirect('login')
+    return redirect('core:login')
 
 @login_required
 def dashboard_view(request):
