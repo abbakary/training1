@@ -45,17 +45,15 @@ def exam_result_list_view(request):
     results = results.order_by('-exam_date')
     
     # Map result.id -> assignment.id for convenience in templates
-    assignment_for = {}
     for r in results:
         assignment = ExamAssignment.objects.filter(exam=r.exam, dreva=r.dreva).first()
         if assignment:
-            assignment_for[r.id] = assignment.id
+            setattr(r, 'assignment_id', assignment.id)
 
     context = {
         'results': results,
         'form': form,
         'total_results': results.count(),
-        'assignment_for': assignment_for,
     }
     return render(request, 'marking/result_list.html', context)
 
