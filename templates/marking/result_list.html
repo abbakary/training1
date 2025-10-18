@@ -32,7 +32,7 @@
                                 <select name="exam" class="form-control">
                                     <option value="">All Exams</option>
                                     {% for exam in form.exam.field.queryset %}
-                                    <option value="{{ exam.id }}"{% if request.GET.exam|add:"0" == exam.id %} selected{% endif %}>
+                                    <option value="{{ exam.id }}"{% if request.GET.exam == exam.id|stringformat:"s" %} selected{% endif %}>
                                         {{ exam.title }}
                                     </option>
                                     {% endfor %}
