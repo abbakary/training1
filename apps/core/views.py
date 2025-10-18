@@ -12,14 +12,14 @@ from .models import Organization, UserRole
 def login_view(request):
     """User login view."""
     if request.user.is_authenticated:
-        return redirect('dashboard')
+        return redirect('core:dashboard')
     
     if request.method == 'POST':
         form = LoginForm(request, data=request.POST)
         if form.is_valid():
             user = form.get_user()
             login(request, user)
-            return redirect('dashboard')
+            return redirect('core:dashboard')
     else:
         form = LoginForm()
     
@@ -30,7 +30,7 @@ def login_view(request):
 def logout_view(request):
     """User logout view."""
     logout(request)
-    return redirect('login')
+    return redirect('core:login')
 
 @login_required
 def dashboard_view(request):
@@ -87,7 +87,7 @@ def organization_list_view(request):
     try:
         user_role = request.user.role
         if not user_role.is_admin():
-            return redirect('dashboard')
+            return redirect('core:dashboard')
     except UserRole.DoesNotExist:
         return redirect('login')
     

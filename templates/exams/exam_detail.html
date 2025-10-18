@@ -1,0 +1,102 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}{{ exam.title }} - Exam{% endblock %}
+
+{% block content %}
+<div class="page-title">
+  <div class="row">
+    <div class="col-6"><h4>{{ exam.title }}</h4></div>
+    <div class="col-6">
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="{% url 'core:dashboard' %}"><svg class="stroke-icon"><use href="{% static 'riho/assets/svg/icon-sprite.svg' %}#stroke-home"></use></svg></a></li>
+        <li class="breadcrumb-item"><a href="{% url 'exams:exam_list' %}">Exams</a></li>
+        <li class="breadcrumb-item active">{{ exam.title }}</li>
+      </ol>
+    </div>
+  </div>
+</div>
+
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-xl-4">
+      <div class="card">
+        <div class="card-header"><h4>Exam Info</h4></div>
+        <div class="card-body">
+          <p><strong>Subject:</strong> {{ exam.subject|default:'-' }}</p>
+          <p><strong>Session:</strong> {{ exam.training_session.name }}</p>
+          <p><strong>Max Marks:</strong> {{ exam.max_marks }}</p>
+          <p><strong>Duration:</strong> {{ exam.duration_minutes }} min</p>
+          <p><strong>Passing:</strong> {{ exam.passing_percentage }}%</p>
+          {% if user.role.is_trainer %}
+          <a href="{% url 'exams:exam_assign' exam.id %}" class="btn btn-primary btn-sm"><i data-feather="plus"></i> Assign to Drevas</a>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+
+    <div class="col-xl-8">
+      <div class="card mb-4">
+        <div class="card-header"><h4>Questions ({{ questions|length }})</h4></div>
+        <div class="card-body">
+          {% if questions %}
+          <div class="table-responsive">
+            <table class="table table-sm">
+              <thead><tr><th>No.</th><th>Question</th><th>Type</th><th>Marks</th></tr></thead>
+              <tbody>
+                {% for q in questions %}
+                <tr>
+                  <td>{{ q.question_number }}</td>
+                  <td>{{ q.question_text }}</td>
+                  <td>{{ q.get_question_type_display }}</td>
+                  <td>{{ q.marks }}</td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+          {% else %}
+          <p class="text-muted">No questions added.</p>
+          {% endif %}
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header"><h4>Assignments ({{ total_assignments }})</h4></div>
+        <div class="card-body">
+          {% if assignments %}
+          <div class="table-responsive">
+            <table class="table table-hover">
+              <thead><tr><th>Dreva</th><th>Due Date</th><th>Status</th><th>Paper</th><th>Actions</th></tr></thead>
+              <tbody>
+                {% for a in assignments %}
+                <tr>
+                  <td>{{ a.dreva.full_name }} <small class="text-muted">({{ a.dreva.driver_id }})</small></td>
+                  <td>{{ a.due_date|date:"d M Y"|default:'-' }}</td>
+                  <td><span class="badge rounded-pill badge-{% if a.status == 'marked' %}success{% elif a.status == 'completed' %}warning{% else %}secondary{% endif %}">{{ a.get_status_display }}</span></td>
+                  <td>
+                    {% if a.exam_paper_pdf %}
+                      <a href="{{ a.exam_paper_pdf.url }}" class="btn btn-xs btn-outline-primary">Download</a>
+                    {% else %}
+                      <a href="{% url 'exams:generate_paper' a.id %}" class="btn btn-xs btn-primary">Generate</a>
+                    {% endif %}
+                  </td>
+                  <td>
+                    {% if user.role.is_trainer %}
+                    <a href="{% url 'marking:record_marks' a.id %}" class="btn btn-xs btn-outline-secondary">Mark</a>
+                    {% endif %}
+                  </td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+          {% else %}
+          <p class="text-muted">No assignments yet.</p>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

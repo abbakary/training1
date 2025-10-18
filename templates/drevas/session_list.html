@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Training Sessions{% endblock %}
+
+{% block content %}
+<div class="page-title">
+  <div class="row">
+    <div class="col-6"><h4>Training Sessions</h4></div>
+    <div class="col-6">
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="{% url 'core:dashboard' %}"><svg class="stroke-icon"><use href="{% static 'riho/assets/svg/icon-sprite.svg' %}#stroke-home"></use></svg></a></li>
+        <li class="breadcrumb-item active">Sessions</li>
+      </ol>
+    </div>
+  </div>
+</div>
+
+<div class="container-fluid">
+  <div class="row">
+    {% for s in sessions %}
+    <div class="col-md-6 col-lg-4 mb-4">
+      <div class="card h-100">
+        <div class="card-body">
+          <h5 class="card-title">{{ s.name }}</h5>
+          <p class="text-muted">{{ s.period }}</p>
+          <p class="mb-1"><strong>Start:</strong> {{ s.start_date|date:"d M Y" }}</p>
+          <p class="mb-3"><strong>End:</strong> {{ s.end_date|date:"d M Y" }}</p>
+          <a href="{% url 'drevas:session_detail' s.id %}" class="btn btn-sm btn-primary">View</a>
+        </div>
+      </div>
+    </div>
+    {% empty %}
+    <div class="col-12"><p class="text-center text-muted py-4">No sessions</p></div>
+    {% endfor %}
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Assign Exam{% endblock %}
+
+{% block content %}
+<div class="page-title">
+  <div class="row">
+    <div class="col-6"><h4>Assign: {{ exam.title }}</h4></div>
+    <div class="col-6">
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="{% url 'core:dashboard' %}"><svg class="stroke-icon"><use href="{% static 'riho/assets/svg/icon-sprite.svg' %}#stroke-home"></use></svg></a></li>
+        <li class="breadcrumb-item"><a href="{% url 'exams:exam_detail' exam.id %}">Exam</a></li>
+        <li class="breadcrumb-item active">Assign</li>
+      </ol>
+    </div>
+  </div>
+</div>
+
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-xl-8">
+      <div class="card">
+        <div class="card-header"><h4>Select Drevas</h4></div>
+        <div class="card-body">
+          <form method="post">
+            {% csrf_token %}
+            <div class="mb-3">
+              <label class="form-label">Due Date (optional)</label>
+              {{ form.due_date }}
+            </div>
+            <div class="border rounded p-3 custom-scrollbar" style="max-height: 420px;">
+              {{ form.drevas }}
+            </div>
+            <button class="btn btn-primary mt-3">Assign Exam</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

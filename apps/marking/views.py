@@ -1,11 +1,13 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
 from django.db.models import Q
+from django.core.files.base import ContentFile
 from apps.core.models import UserRole
 from apps.exams.models import Exam, ExamAssignment
 from apps.drevas.models import Dreva
 from .models import ExamResult, QuestionResponse
 from .forms import ExamResultForm, QuestionResponseFormSet, ExamResultFilterForm
+from .utils import generate_marked_exam_pdf
 
 @login_required
 def exam_result_list_view(request):
@@ -42,6 +44,12 @@ def exam_result_list_view(request):
     # Sort by date
     results = results.order_by('-exam_date')
     
+    # Map result.id -> assignment.id for convenience in templates
+    for r in results:
+        assignment = ExamAssignment.objects.filter(exam=r.exam, dreva=r.dreva).first()
+        if assignment:
+            setattr(r, 'assignment_id', assignment.id)
+
     context = {
         'results': results,
         'form': form,
@@ -66,11 +74,11 @@ def exam_result_detail_view(request, result_id):
     
     questions = result.exam.examquestion_set.all().order_by('question_number')
     responses = {r.question_id: r for r in result.responses.all()}
-    
+    question_rows = [(q, responses.get(q.id)) for q in questions]
+
     context = {
         'result': result,
-        'questions': questions,
-        'responses': responses,
+        'question_rows': question_rows,
     }
     return render(request, 'marking/result_detail.html', context)
 
@@ -80,7 +88,7 @@ def record_marks_view(request, assignment_id):
     try:
         user_role = request.user.role
         if not user_role.is_trainer() and not user_role.is_admin():
-            return redirect('dashboard')
+            return redirect('core:dashboard')
         organization = user_role.organization
     except UserRole.DoesNotExist:
         return redirect('login')
@@ -103,14 +111,24 @@ def record_marks_view(request, assignment_id):
         formset = QuestionResponseFormSet(request.POST, instance=result)
         
         if form.is_valid() and formset.is_valid():
-            form.save()
+            updated_result = form.save()
             formset.save()
-            
+
+            if not updated_result.marking_date:
+                from django.utils import timezone
+                updated_result.marking_date = timezone.now()
+                updated_result.save()
+
+            # Auto-generate a marked exam PDF reflecting recorded marks
+            pdf_bytes = generate_marked_exam_pdf(updated_result)
+            marked_filename = f"marked_{updated_result.dreva.driver_id}_{updated_result.exam.id}.pdf"
+            updated_result.marked_exam_pdf.save(marked_filename, ContentFile(pdf_bytes), save=True)
+
             # Update assignment status
             assignment.status = 'marked'
             assignment.save()
-            
-            return redirect('marking:result_detail', result_id=result.id)
+
+            return redirect('marking:result_detail', result_id=updated_result.id)
     else:
         form = ExamResultForm(instance=result)
         formset = QuestionResponseFormSet(instance=result)
