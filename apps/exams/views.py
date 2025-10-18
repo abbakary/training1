@@ -66,7 +66,7 @@ def exam_create_view(request):
     try:
         user_role = request.user.role
         if not user_role.is_trainer() and not user_role.is_admin():
-            return redirect('dashboard')
+            return redirect('core:dashboard')
         organization = user_role.organization
     except UserRole.DoesNotExist:
         return redirect('login')
@@ -99,7 +99,7 @@ def exam_assign_view(request, exam_id):
     try:
         user_role = request.user.role
         if not user_role.is_trainer() and not user_role.is_admin():
-            return redirect('dashboard')
+            return redirect('core:dashboard')
         organization = user_role.organization
     except UserRole.DoesNotExist:
         return redirect('login')
