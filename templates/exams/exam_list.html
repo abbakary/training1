@@ -48,7 +48,7 @@
                                 <select name="session" class="form-control">
                                     <option value="">All Sessions</option>
                                     {% for session in sessions %}
-                                    <option value="{{ session.id }}" {% if selected_session == session.id|stringformat:"s" %}selected{% endif %}>
+                                    <option value="{{ session.id }}"{% if selected_session == session.id|stringformat:"s" %} selected{% endif %}>
                                         {{ session.name }}
                                     </option>
                                     {% endfor %}
