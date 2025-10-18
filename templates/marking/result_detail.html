@@ -1,0 +1,67 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Result - {{ result.dreva.full_name }}{% endblock %}
+
+{% block content %}
+<div class="page-title">
+  <div class="row">
+    <div class="col-6"><h4>Result: {{ result.exam.title }}</h4></div>
+    <div class="col-6">
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="{% url 'core:dashboard' %}"><svg class="stroke-icon"><use href="{% static 'riho/assets/svg/icon-sprite.svg' %}#stroke-home"></use></svg></a></li>
+        <li class="breadcrumb-item"><a href="{% url 'marking:result_list' %}">Results</a></li>
+        <li class="breadcrumb-item active">Detail</li>
+      </ol>
+    </div>
+  </div>
+</div>
+
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-xl-4">
+      <div class="card">
+        <div class="card-header"><h4>Dreva</h4></div>
+        <div class="card-body">
+          <p><strong>Name:</strong> {{ result.dreva.full_name }}</p>
+          <p><strong>ID:</strong> {{ result.dreva.driver_id }}</p>
+          <p><strong>Organization:</strong> {{ result.dreva.organization.name }}</p>
+          <p><strong>Status:</strong> {{ result.get_status_display }}</p>
+          {% if result.marked_exam_pdf %}
+          <a href="{{ result.marked_exam_pdf.url }}" class="btn btn-sm btn-primary">Download Marked PDF</a>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+    <div class="col-xl-8">
+      <div class="card">
+        <div class="card-header"><h4>Exam Summary</h4></div>
+        <div class="card-body">
+          <div class="row mb-3">
+            <div class="col-md-3"><strong>Marks:</strong> {{ result.obtained_marks|default:'-' }}/{{ result.total_marks }}</div>
+            <div class="col-md-3"><strong>Percentage:</strong> {{ result.percentage|default:'-' }}%</div>
+            <div class="col-md-3"><strong>Exam Date:</strong> {{ result.exam_date|date:"d M Y"|default:'-' }}</div>
+            <div class="col-md-3"><strong>Marked By:</strong> {{ result.marked_by|default:'-' }}</div>
+          </div>
+          <div class="table-responsive">
+            <table class="table table-sm">
+              <thead><tr><th>No.</th><th>Question</th><th>Marks</th><th>Comments</th></tr></thead>
+              <tbody>
+                {% for q in questions %}
+                {% with r=responses|get_item:q.id %}{% endwith %}
+                <tr>
+                  <td>{{ q.question_number }}</td>
+                  <td>{{ q.question_text }}</td>
+                  <td>{% if responses.q.id %}{{ responses.q.id.marks_awarded|default:'-' }}{% else %}-{% endif %}/{{ q.marks }}</td>
+                  <td>{% if responses.q.id %}{{ responses.q.id.comments|default:'' }}{% endif %}</td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

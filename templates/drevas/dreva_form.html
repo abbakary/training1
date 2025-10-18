@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}{{ action }} Dreva{% endblock %}
+
+{% block content %}
+<div class="page-title">
+  <div class="row">
+    <div class="col-6"><h4>{{ action }} Dreva</h4></div>
+    <div class="col-6">
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="{% url 'core:dashboard' %}"><svg class="stroke-icon"><use href="{% static 'riho/assets/svg/icon-sprite.svg' %}#stroke-home"></use></svg></a></li>
+        <li class="breadcrumb-item"><a href="{% url 'drevas:dreva_list' %}">Drevas</a></li>
+        <li class="breadcrumb-item active">{{ action }}</li>
+      </ol>
+    </div>
+  </div>
+</div>
+
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-xl-6">
+      <div class="card">
+        <div class="card-header"><h4>Driver Details</h4></div>
+        <div class="card-body">
+          <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            <div class="mb-3">{{ form.full_name.label_tag }}{{ form.full_name }}</div>
+            <div class="mb-3">{{ form.driver_id.label_tag }}{{ form.driver_id }}</div>
+            <div class="row">
+              <div class="col-md-6 mb-3">{{ form.phone.label_tag }}{{ form.phone }}</div>
+              <div class="col-md-6 mb-3">{{ form.email.label_tag }}{{ form.email }}</div>
+            </div>
+            <div class="row">
+              <div class="col-md-6 mb-3">{{ form.organization.label_tag }}{{ form.organization }}</div>
+              <div class="col-md-6 mb-3">{{ form.status.label_tag }}{{ form.status }}</div>
+            </div>
+            <div class="mb-3">{{ form.profile_photo.label_tag }}{{ form.profile_photo }}</div>
+            <button class="btn btn-primary">{{ action }}</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

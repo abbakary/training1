@@ -1,0 +1,89 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Progress - {{ dreva.full_name }}{% endblock %}
+
+{% block content %}
+<div class="page-title">
+  <div class="row">
+    <div class="col-6"><h4>{{ dreva.full_name }} - Progress</h4></div>
+    <div class="col-6">
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="{% url 'core:dashboard' %}"><svg class="stroke-icon"><use href="{% static 'riho/assets/svg/icon-sprite.svg' %}#stroke-home"></use></svg></a></li>
+        <li class="breadcrumb-item"><a href="{% url 'drevas:dreva_detail' dreva.id %}">Profile</a></li>
+        <li class="breadcrumb-item active">Progress</li>
+      </ol>
+    </div>
+  </div>
+</div>
+
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-xl-4">
+      <div class="card">
+        <div class="card-body">
+          <h5 class="mb-3">Overview</h5>
+          <p><strong>Total Exams:</strong> {{ stats.total_exams }}</p>
+          <p><strong>Passed:</strong> {{ stats.passed_exams }}</p>
+          <p><strong>Failed:</strong> {{ stats.failed_exams }}</p>
+          <p><strong>Average:</strong> {{ stats.average_score }}%</p>
+          <p><strong>Pending:</strong> {{ stats.pending_exams }}</p>
+          <p><strong>Completed:</strong> {{ stats.completed_exams }}</p>
+        </div>
+      </div>
+    </div>
+    <div class="col-xl-8">
+      <div class="card mb-4">
+        <div class="card-header"><h4>Assignments</h4></div>
+        <div class="card-body">
+          {% if assignments %}
+          <div class="table-responsive">
+            <table class="table table-sm">
+              <thead><tr><th>Exam</th><th>Status</th><th>Paper</th><th>Action</th></tr></thead>
+              <tbody>
+                {% for a in assignments %}
+                <tr>
+                  <td>{{ a.exam.title }}</td>
+                  <td>{{ a.get_status_display }}</td>
+                  <td>{% if a.exam_paper_pdf %}<a href="{{ a.exam_paper_pdf.url }}">Download</a>{% else %}-{% endif %}</td>
+                  <td>{% if user.role.is_trainer %}<a href="{% url 'marking:record_marks' a.id %}" class="btn btn-xs btn-outline-secondary">Mark</a>{% endif %}</td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+          {% else %}
+          <p class="text-muted">No assignments.</p>
+          {% endif %}
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header"><h4>Results</h4></div>
+        <div class="card-body">
+          {% if results %}
+          <div class="table-responsive">
+            <table class="table table-sm">
+              <thead><tr><th>Exam</th><th>Date</th><th>Marks</th><th>Status</th><th>PDF</th></tr></thead>
+              <tbody>
+                {% for r in results %}
+                <tr>
+                  <td>{{ r.exam.title }}</td>
+                  <td>{{ r.exam_date|date:"d M Y"|default:'-' }}</td>
+                  <td>{% if r.obtained_marks %}{{ r.obtained_marks }}/{{ r.total_marks }}{% else %}-{% endif %}</td>
+                  <td>{{ r.get_status_display }}</td>
+                  <td>{% if r.marked_exam_pdf %}<a href="{{ r.marked_exam_pdf.url }}">Download</a>{% else %}-{% endif %}</td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+          {% else %}
+          <p class="text-muted">No results.</p>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
