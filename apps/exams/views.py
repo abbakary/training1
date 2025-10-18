@@ -1,7 +1,8 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
-from django.http import HttpResponse, FileResponse
+from django.http import HttpResponse
 from django.db.models import Q
+from django.core.files.base import ContentFile
 from apps.core.models import UserRole
 from apps.drevas.models import Dreva, TrainingSession
 from .models import Exam, ExamQuestion, ExamAssignment
@@ -145,8 +146,12 @@ def generate_exam_paper_view(request, assignment_id):
         exam__training_session__organization=organization
     )
     
-    pdf_file = generate_exam_paper_pdf(assignment)
-    
-    response = HttpResponse(pdf_file, content_type='application/pdf')
-    response['Content-Disposition'] = f'attachment; filename="exam_{assignment.dreva.driver_id}_{assignment.exam.id}.pdf"'
+    pdf_bytes = generate_exam_paper_pdf(assignment)
+
+    # Save PDF to assignment if not already saved or if regeneration is desired
+    filename = f"exam_{assignment.dreva.driver_id}_{assignment.exam.id}.pdf"
+    assignment.exam_paper_pdf.save(filename, ContentFile(pdf_bytes), save=True)
+
+    response = HttpResponse(pdf_bytes, content_type='application/pdf')
+    response['Content-Disposition'] = f'attachment; filename="{filename}"'
     return response
