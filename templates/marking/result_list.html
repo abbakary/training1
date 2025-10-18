@@ -32,18 +32,16 @@
                                 <select name="exam" class="form-control">
                                     <option value="">All Exams</option>
                                     {% for exam in form.exam.field.queryset %}
-                                    <option value="{{ exam.id }}"{% if request.GET.exam == exam.id|stringformat:"s" %} selected{% endif %}>
-                                        {{ exam.title }}
-                                    </option>
+                                    <option value="{{ exam.id }}">{{ exam.title }}</option>
                                     {% endfor %}
                                 </select>
                             </div>
                             <div class="col-md-3">
                                 <select name="status" class="form-control">
                                     <option value="">All Status</option>
-                                    <option value="pending"{% if request.GET.status == 'pending' %} selected{% endif %}>Pending</option>
-                                    <option value="passed"{% if request.GET.status == 'passed' %} selected{% endif %}>Passed</option>
-                                    <option value="failed"{% if request.GET.status == 'failed' %} selected{% endif %}>Failed</option>
+                                    <option value="pending">Pending</option>
+                                    <option value="passed">Passed</option>
+                                    <option value="failed">Failed</option>
                                 </select>
                             </div>
                             <div class="col-md-3">
