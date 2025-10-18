@@ -16,7 +16,7 @@ def exam_result_list_view(request):
         user_role = request.user.role
         organization = user_role.organization
     except UserRole.DoesNotExist:
-        return redirect('login')
+        return redirect('core:login')
     
     results = ExamResult.objects.filter(
         dreva__organization=organization
@@ -64,7 +64,7 @@ def exam_result_detail_view(request, result_id):
         user_role = request.user.role
         organization = user_role.organization
     except UserRole.DoesNotExist:
-        return redirect('login')
+        return redirect('core:login')
     
     result = get_object_or_404(
         ExamResult,
@@ -91,7 +91,7 @@ def record_marks_view(request, assignment_id):
             return redirect('core:dashboard')
         organization = user_role.organization
     except UserRole.DoesNotExist:
-        return redirect('login')
+        return redirect('core:login')
     
     assignment = get_object_or_404(
         ExamAssignment,
@@ -159,7 +159,7 @@ def dreva_progress_view(request, dreva_id):
         user_role = request.user.role
         organization = user_role.organization
     except UserRole.DoesNotExist:
-        return redirect('login')
+        return redirect('core:login')
     
     dreva = get_object_or_404(Dreva, id=dreva_id, organization=organization)
     

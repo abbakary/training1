@@ -28,7 +28,7 @@
           <p><strong>Max Marks:</strong> {{ exam.max_marks }}</p>
           <p><strong>Duration:</strong> {{ exam.duration_minutes }} min</p>
           <p><strong>Passing:</strong> {{ exam.passing_percentage }}%</p>
-          {% if user.role.is_trainer %}
+          {% if user_role and user_role.is_trainer %}
           <a href="{% url 'exams:exam_assign' exam.id %}" class="btn btn-primary btn-sm"><i data-feather="plus"></i> Assign to Drevas</a>
           {% endif %}
         </div>
@@ -82,7 +82,7 @@
                     {% endif %}
                   </td>
                   <td>
-                    {% if user.role.is_trainer %}
+                    {% if user_role and user_role.is_trainer %}
                     <a href="{% url 'marking:record_marks' a.id %}" class="btn btn-xs btn-outline-secondary">Mark</a>
                     {% endif %}
                   </td>

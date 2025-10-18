@@ -47,7 +47,7 @@
                     </a>
                     <ul class="sidebar-submenu">
                         <li><a href="{% url 'drevas:dreva_list' %}">All Drevas</a></li>
-                        {% if user.role.is_admin %}
+                        {% if user_role and user_role.is_admin %}
                         <li><a href="{% url 'drevas:dreva_create' %}">Add New Dreva</a></li>
                         {% endif %}
                     </ul>
@@ -63,7 +63,7 @@
                     </a>
                     <ul class="sidebar-submenu">
                         <li><a href="{% url 'drevas:session_list' %}">All Sessions</a></li>
-                        {% if user.role.is_admin %}
+                        {% if user_role and user_role.is_admin %}
                         <li><a href="{% url 'drevas:session_create' %}">Create Session</a></li>
                         {% endif %}
                     </ul>
@@ -79,7 +79,7 @@
                     </a>
                     <ul class="sidebar-submenu">
                         <li><a href="{% url 'exams:exam_list' %}">All Exams</a></li>
-                        {% if user.role.is_trainer %}
+                        {% if user_role and user_role.is_trainer %}
                         <li><a href="{% url 'exams:exam_create' %}">Create Exam</a></li>
                         {% endif %}
                     </ul>
@@ -95,14 +95,14 @@
                     </a>
                     <ul class="sidebar-submenu">
                         <li><a href="{% url 'marking:result_list' %}">Exam Results</a></li>
-                        {% if user.role.is_trainer %}
+                        {% if user_role and user_role.is_trainer %}
                         <li><a href="{% url 'marking:result_list' %}?status=pending">Pending Marking</a></li>
                         {% endif %}
                     </ul>
                 </li>
                 
                 <!-- Admin Section -->
-                {% if user.role.is_admin %}
+                {% if user_role and user_role.is_admin %}
                 <li class="sidebar-main-title">
                     <div><h6>ADMINISTRATION</h6></div>
                 </li>

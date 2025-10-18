@@ -14,7 +14,7 @@ def dreva_list_view(request):
         user_role = request.user.role
         organization = user_role.organization
     except UserRole.DoesNotExist:
-        return redirect('login')
+        return redirect('core:login')
     
     drevas = Dreva.objects.filter(organization=organization)
     form = DrevaSearchForm(request.GET, organization=organization)
@@ -44,7 +44,7 @@ def dreva_detail_view(request, dreva_id):
         user_role = request.user.role
         organization = user_role.organization
     except UserRole.DoesNotExist:
-        return redirect('login')
+        return redirect('core:login')
     
     dreva = get_object_or_404(Dreva, id=dreva_id, organization=organization)
     exam_results = ExamResult.objects.filter(dreva=dreva).select_related('exam')
@@ -74,7 +74,7 @@ def dreva_create_view(request):
             return redirect('core:dashboard')
         organization = user_role.organization
     except UserRole.DoesNotExist:
-        return redirect('login')
+        return redirect('core:login')
     
     if request.method == 'POST':
         form = DrevaForm(request.POST, request.FILES)
@@ -99,7 +99,7 @@ def dreva_edit_view(request, dreva_id):
             return redirect('core:dashboard')
         organization = user_role.organization
     except UserRole.DoesNotExist:
-        return redirect('login')
+        return redirect('core:login')
     
     dreva = get_object_or_404(Dreva, id=dreva_id, organization=organization)
     
@@ -121,7 +121,7 @@ def training_session_list_view(request):
         user_role = request.user.role
         organization = user_role.organization
     except UserRole.DoesNotExist:
-        return redirect('login')
+        return redirect('core:login')
     
     sessions = TrainingSession.objects.filter(organization=organization)
     context = {'sessions': sessions}
@@ -134,7 +134,7 @@ def training_session_detail_view(request, session_id):
         user_role = request.user.role
         organization = user_role.organization
     except UserRole.DoesNotExist:
-        return redirect('login')
+        return redirect('core:login')
     
     session = get_object_or_404(TrainingSession, id=session_id, organization=organization)
     enrollments = SessionEnrollment.objects.filter(training_session=session).select_related('dreva')
@@ -157,7 +157,7 @@ def training_session_create_view(request):
             return redirect('core:dashboard')
         organization = user_role.organization
     except UserRole.DoesNotExist:
-        return redirect('login')
+        return redirect('core:login')
     
     if request.method == 'POST':
         form = TrainingSessionForm(request.POST)

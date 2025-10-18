@@ -52,7 +52,7 @@
                         <p><strong>Enrolled:</strong> <br>{{ dreva.date_enrolled|date:"d M Y" }}</p>
                     </div>
                     
-                    {% if user.role.is_admin %}
+                    {% if user_role and user_role.is_admin %}
                     <div class="mt-3">
                         <a href="{% url 'drevas:dreva_edit' dreva.id %}" class="btn btn-primary btn-sm w-100">
                             <i data-feather="edit-2"></i> Edit Profile

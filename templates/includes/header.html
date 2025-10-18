@@ -78,7 +78,7 @@
                                 <span>{{ user.first_name|default:user.username }}</span>
                                 <i class="middle fa fa-angle-down"></i>
                             </div>
-                            <p class="mb-0 font-roboto">{{ user.role.get_role_display|default:'User' }}</p>
+                            <p class="mb-0 font-roboto">{{ user_role.get_role_display|default:'User' }}</p>
                         </div>
                     </div>
                     <ul class="profile-dropdown onhover-show-div">
