@@ -71,7 +71,7 @@ def dreva_create_view(request):
     try:
         user_role = request.user.role
         if not user_role.is_admin():
-            return redirect('dashboard')
+            return redirect('core:dashboard')
         organization = user_role.organization
     except UserRole.DoesNotExist:
         return redirect('login')
@@ -96,7 +96,7 @@ def dreva_edit_view(request, dreva_id):
     try:
         user_role = request.user.role
         if not user_role.is_admin():
-            return redirect('dashboard')
+            return redirect('core:dashboard')
         organization = user_role.organization
     except UserRole.DoesNotExist:
         return redirect('login')
@@ -154,7 +154,7 @@ def training_session_create_view(request):
     try:
         user_role = request.user.role
         if not user_role.is_admin():
-            return redirect('dashboard')
+            return redirect('core:dashboard')
         organization = user_role.organization
     except UserRole.DoesNotExist:
         return redirect('login')
