@@ -1,0 +1,198 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}{{ dreva.full_name }} - DREVAS{% endblock %}
+
+{% block content %}
+<div class="page-title">
+    <div class="row">
+        <div class="col-6">
+            <h4>{{ dreva.full_name }}</h4>
+        </div>
+        <div class="col-6">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{% url 'core:dashboard' %}">
+                    <svg class="stroke-icon"><use href="{% static 'riho/assets/svg/icon-sprite.svg' %}#stroke-home"></use></svg>
+                </a></li>
+                <li class="breadcrumb-item"><a href="{% url 'drevas:dreva_list' %}">Drevas</a></li>
+                <li class="breadcrumb-item active">{{ dreva.full_name }}</li>
+            </ol>
+        </div>
+    </div>
+</div>
+
+<div class="container-fluid">
+    <div class="row">
+        <!-- Profile Card -->
+        <div class="col-xl-3">
+            <div class="card">
+                <div class="card-body text-center">
+                    {% if dreva.profile_photo %}
+                    <img src="{{ dreva.profile_photo.url }}" class="img-fluid rounded-circle mb-3" style="max-width: 150px;">
+                    {% else %}
+                    <div class="avatar-placeholder rounded-circle mb-3 d-flex align-items-center justify-content-center" 
+                         style="width: 150px; height: 150px; background: #e9ecef; margin: 0 auto;">
+                        <i data-feather="user" style="width: 60px; height: 60px; color: #6c757d;"></i>
+                    </div>
+                    {% endif %}
+                    
+                    <h4 class="mb-2">{{ dreva.full_name }}</h4>
+                    <p class="f-light mb-3">{{ dreva.driver_id }}</p>
+                    
+                    <span class="badge rounded-pill badge-{% if dreva.status == 'passed' %}success{% elif dreva.status == 'failed' %}danger{% elif dreva.status == 'suspended' %}dark{% else %}warning{% endif %} mb-3">
+                        {{ dreva.get_status_display }}
+                    </span>
+                    
+                    <hr>
+                    
+                    <div class="text-start">
+                        <p><strong>Email:</strong> <br>{{ dreva.email|default:'-' }}</p>
+                        <p><strong>Phone:</strong> <br>{{ dreva.phone|default:'-' }}</p>
+                        <p><strong>Organization:</strong> <br>{{ dreva.organization.name }}</p>
+                        <p><strong>Enrolled:</strong> <br>{{ dreva.date_enrolled|date:"d M Y" }}</p>
+                    </div>
+                    
+                    {% if user.role.is_admin %}
+                    <div class="mt-3">
+                        <a href="{% url 'drevas:dreva_edit' dreva.id %}" class="btn btn-primary btn-sm w-100">
+                            <i data-feather="edit-2"></i> Edit Profile
+                        </a>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        
+        <!-- Statistics -->
+        <div class="col-xl-9">
+            <!-- Stats Cards -->
+            <div class="row mb-4">
+                <div class="col-md-3">
+                    <div class="card">
+                        <div class="card-body">
+                            <h2 class="f-w-600">{{ statistics.total_exams }}</h2>
+                            <p class="f-light">Total Exams</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card">
+                        <div class="card-body">
+                            <h2 class="f-w-600 text-success">{{ statistics.passed_exams }}</h2>
+                            <p class="f-light">Passed</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card">
+                        <div class="card-body">
+                            <h2 class="f-w-600 text-danger">{{ statistics.failed_exams }}</h2>
+                            <p class="f-light">Failed</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card">
+                        <div class="card-body">
+                            <h2 class="f-w-600 text-info">{{ statistics.average_score }}%</h2>
+                            <p class="f-light">Average Score</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Training Sessions -->
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h4>Training Sessions</h4>
+                </div>
+                <div class="card-body">
+                    {% if sessions %}
+                    <div class="table-responsive">
+                        <table class="table table-sm">
+                            <thead>
+                                <tr>
+                                    <th>Session</th>
+                                    <th>Period</th>
+                                    <th>Start Date</th>
+                                    <th>End Date</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for enrollment in sessions %}
+                                <tr>
+                                    <td>
+                                        <a href="{% url 'drevas:session_detail' enrollment.training_session.id %}">
+                                            {{ enrollment.training_session.name }}
+                                        </a>
+                                    </td>
+                                    <td>{{ enrollment.training_session.period }}</td>
+                                    <td>{{ enrollment.training_session.start_date|date:"d M Y" }}</td>
+                                    <td>{{ enrollment.training_session.end_date|date:"d M Y" }}</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    {% else %}
+                    <p class="text-muted">No sessions enrolled yet</p>
+                    {% endif %}
+                </div>
+            </div>
+            
+            <!-- Exam Results -->
+            <div class="card">
+                <div class="card-header">
+                    <h4>Exam Results</h4>
+                </div>
+                <div class="card-body">
+                    {% if exam_results %}
+                    <div class="table-responsive custom-scrollbar">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Exam</th>
+                                    <th>Session</th>
+                                    <th>Date</th>
+                                    <th>Marks</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for result in exam_results %}
+                                <tr>
+                                    <td>{{ result.exam.title }}</td>
+                                    <td>{{ result.exam.training_session.name }}</td>
+                                    <td>{{ result.exam_date|date:"d M Y"|default:'-' }}</td>
+                                    <td>
+                                        {% if result.obtained_marks %}
+                                        {{ result.obtained_marks }}/{{ result.total_marks }}
+                                        {% else %}
+                                        <span class="text-muted">-</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        <span class="badge rounded-pill badge-{% if result.status == 'passed' %}success{% elif result.status == 'failed' %}danger{% else %}secondary{% endif %}">
+                                            {{ result.get_status_display }}
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <a href="{% url 'marking:result_detail' result.id %}" class="btn btn-sm btn-outline-primary">
+                                            View
+                                        </a>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    {% else %}
+                    <p class="text-muted">No exam results yet</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

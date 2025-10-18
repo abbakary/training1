@@ -1,0 +1,105 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Exams - DREVAS{% endblock %}
+
+{% block content %}
+<div class="page-title">
+    <div class="row">
+        <div class="col-6">
+            <h4>Exams</h4>
+        </div>
+        <div class="col-6">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{% url 'core:dashboard' %}">
+                    <svg class="stroke-icon"><use href="{% static 'riho/assets/svg/icon-sprite.svg' %}#stroke-home"></use></svg>
+                </a></li>
+                <li class="breadcrumb-item active">Exams</li>
+            </ol>
+        </div>
+    </div>
+</div>
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h4>All Exams</h4>
+                        {% if user.role.is_trainer %}
+                        <a href="{% url 'exams:exam_create' %}" class="btn btn-primary btn-sm">
+                            <i data-feather="plus"></i> Create Exam
+                        </a>
+                        {% endif %}
+                    </div>
+                </div>
+                
+                <div class="card-body">
+                    <!-- Filter -->
+                    <form method="get" class="mb-4">
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <input type="text" name="search" class="form-control" 
+                                       placeholder="Search exams..." 
+                                       value="{{ request.GET.search|default:'' }}">
+                            </div>
+                            <div class="col-md-6">
+                                <select name="session" class="form-control">
+                                    <option value="">All Sessions</option>
+                                    {% for session in sessions %}
+                                    <option value="{{ session.id }}"{% if selected_session == session.id|stringformat:"s" %} selected{% endif %}>
+                                        {{ session.name }}
+                                    </option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div class="col-md-12">
+                                <button type="submit" class="btn btn-primary">
+                                    <i data-feather="search"></i> Filter
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                    
+                    <!-- Exams Cards -->
+                    <div class="row">
+                        {% for exam in exams %}
+                        <div class="col-md-6 col-lg-4 mb-4">
+                            <div class="card h-100">
+                                <div class="card-body">
+                                    <h5 class="card-title">{{ exam.title }}</h5>
+                                    <p class="card-text text-muted f-light">{{ exam.subject }}</p>
+                                    
+                                    <div class="exam-meta mb-3">
+                                        <small class="d-block"><strong>Session:</strong> {{ exam.training_session.name }}</small>
+                                        <small class="d-block"><strong>Max Marks:</strong> {{ exam.max_marks }}</small>
+                                        <small class="d-block"><strong>Duration:</strong> {{ exam.duration_minutes }} min</small>
+                                        <small class="d-block"><strong>Passing:</strong> {{ exam.passing_percentage }}%</small>
+                                    </div>
+                                    
+                                    <div class="d-flex gap-2">
+                                        <a href="{% url 'exams:exam_detail' exam.id %}" class="btn btn-sm btn-primary flex-grow-1">
+                                            <i data-feather="eye"></i> View
+                                        </a>
+                                        {% if user.role.is_trainer %}
+                                        <a href="{% url 'exams:exam_assign' exam.id %}" class="btn btn-sm btn-outline-primary flex-grow-1">
+                                            <i data-feather="plus"></i> Assign
+                                        </a>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        {% empty %}
+                        <div class="col-12">
+                            <p class="text-center text-muted py-4">No exams found</p>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
